@@ -2,7 +2,7 @@ import rateLimit from "express-rate-limit";
 
 export const loginLimit = rateLimit({
     windowMs: 5 * 60 * 1000, // 5 minutos
-    max: 10, // 10 intentos máximos de login
+    max: 50, // 10 intentos máximos de login
     handler: (req, res) => {
         console.log(`Intentos de login excedidos desde IP: ${req.ip}, Endpoint: ${req.path}`)
         res.status(429).json({

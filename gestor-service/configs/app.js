@@ -9,12 +9,18 @@ import { helmetOptions } from './helmet.configuration.js';
 import { dbConnection } from './db.configuration.js';
 import { requestLimit } from './rateLimit.configuration.js';
 import { errorHandler } from '../middlewares/handle-errors.js';
-import publicationRoutes from '../src/publications/publication.routes.js'
+import publicationRoutes from '../src/publications/publication.routes.js';
+import opinionRoutes from '../src/opinions/opinion.routes.js';
 
 const BASE_PATH = '/gestorAdmin/v1';
 
 const routes = (app) => {
     app.use(`${BASE_PATH}/publications`, publicationRoutes);
+
+    app.use(`${BASE_PATH}/publications/:publicationId/opinions`, opinionRoutes);//relaciona la publicacion con las opiniones
+
+    app.use(`${BASE_PATH}/opinions`, opinionRoutes);
+
     app.get(`${BASE_PATH}/health`, (req, res) => {
         res.status(200).json({
             status: 'Healthy',
@@ -48,10 +54,10 @@ export const initServer = async () => {
     try {
         middlewares(app);
         await dbConnection();
-        
+
         routes(app);
         app.use(errorHandler);
-        
+
         app.listen(PORT, () => {
             console.log(`Gestor Opiniones Server running on port: ${PORT}`);
             console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/health`);
