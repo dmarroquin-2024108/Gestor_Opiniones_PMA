@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 import { checkValidators } from './check-validators.js';
 
-const VALID_CATEGORIES = ['tecnología', 'deportes', 'política', 'entretenimiento', 'ciencia', 'educación', 'salud', 'otros'];
+const VALID_CATEGORIES = ['TECNOLOGÍA', 'DEPORTES', 'POLÍTICA', 'ENTRETENIMIENTO', 'EDUCACIÓN', 'SALUD'];
 
 export const validateCreatePublication = [
     body('title')
@@ -14,6 +14,7 @@ export const validateCreatePublication = [
         .trim()
         .notEmpty()
         .withMessage('La categoría es obligatoria')
+        .toUpperCase()
         .isIn(VALID_CATEGORIES)
         .withMessage(`La categoría debe ser una de: ${VALID_CATEGORIES.join(', ')}`),
     body('text')
@@ -32,6 +33,7 @@ export const validateUpdatePublication = [
         .isLength({ min: 3, max: 150 })
         .withMessage('El título debe tener entre 3 y 150 caracteres'),
     body('category')
+        .toUpperCase()
         .optional()
         .trim()
         .isIn(VALID_CATEGORIES)

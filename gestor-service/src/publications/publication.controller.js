@@ -1,14 +1,14 @@
-import {
-    createPublication,
-    getAllPublications,
-    getPublicationById,
-    updatePublication,
-    deletePublication
+import { 
+    createPublicationRecord,
+    getAllPublicationsRecord,
+    getPublicationByIdRecord,
+    updatePublicationRecord,
+    deletePublicationRecord
 } from './publication.service.js';
 
-export const create = async (req, res) => {
+export const createPublication = async (req, res) => {
     try {
-        const publication = await createPublication({
+        const publication = await createPublicationRecord({
             publicationData: req.body,
             authorId: req.user.id
         });
@@ -25,83 +25,45 @@ export const create = async (req, res) => {
             error: e.message
         });
     }
-}; //create
+};
 
-export const getAll = async (req, res) => {
+export const getAllPublications = async (req, res) => {
     try {
-        const publications = await getAllPublications();
-
-        res.status(200).json({
-            success: true,
-            message: 'Publicaciones obtenidas exitosamente',
-            data: publications
-        });
+        const publications = await getAllPublicationsRecord();
+        res.status(200).json({ success: true, message: 'Publicaciones obtenidas', data: publications });
     } catch (e) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener las publicaciones',
-            error: e.message
-        });
+        res.status(500).json({ success: false, message: 'Error al obtener publicaciones', error: e.message });
     }
-}; //getAll
+};
 
-export const getById = async (req, res) => {
+export const getByIdPublication = async (req, res) => {
     try {
-        const { id } = req.params;
-        const publication = await getPublicationById(id);
-
-        res.status(200).json({
-            success: true,
-            message: 'Publicación obtenida exitosamente',
-            data: publication
-        });
+        const publication = await getPublicationByIdRecord(req.params.id);
+        res.status(200).json({ success: true, message: 'Publicación obtenida', data: publication });
     } catch (e) {
         const status = e.message === 'Publicación no encontrada' ? 404 : 500;
-        res.status(status).json({
-            success: false,
-            message: 'Error al obtener la publicación',
-            error: e.message
-        });
+        res.status(status).json({ success: false, message: e.message });
     }
-}; //getById
+};
 
-export const update = async (req, res) => {
+export const updatePublication = async (req, res) => {
     try {
-        const { id } = req.params;
-        const publication = await updatePublication(id, req.body, req.user.id);
-
-        res.status(200).json({
-            success: true,
-            message: 'Publicación actualizada exitosamente',
-            data: publication
-        });
+        const publication = await updatePublicationRecord(req.params.id, req.body, req.user.id);
+        res.status(200).json({ success: true, message: 'Publicación actualizada', data: publication });
     } catch (e) {
-        const status = e.message.includes('no encontrada') ? 404
-            : e.message.includes('permisos') ? 403 : 500;
-        res.status(status).json({
-            success: false,
-            message: 'Error al actualizar la publicación',
-            error: e.message
-        });
+        const status = e.message.includes('No encontrada') ? 404
+                     : e.message.includes('Permisos') ? 403 : 500;
+        res.status(status).json({ success: false, message: e.message });
     }
-}; //update
+};
 
-export const remove = async (req, res) => {
+export const deletePublication = async (req, res) => {
     try {
-        const { id } = req.params;
-        const result = await deletePublication(id, req.user.id);
-
-        res.status(200).json({
-            success: true,
-            message: result.message
-        });
+        const result = await deletePublicationRecord(req.params.id, req.user.id);
+        res.status(200).json({ success: true, message: result.message });
     } catch (e) {
-        const status = e.message.includes('no encontrada') ? 404
-            : e.message.includes('permisos') ? 403 : 500;
-        res.status(status).json({
-            success: false,
-            message: 'Error al eliminar la publicación',
-            error: e.message
-        });
+        const status = e.message.includes('No encontrada') ? 404
+                     : e.message.includes('Permisos') ? 403 : 500;
+        res.status(status).json({ success: false, message: e.message });
     }
-}; //remove
+};
